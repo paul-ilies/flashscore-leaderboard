@@ -11,7 +11,6 @@ function Tip({ targetRef, children, leftPosition }) {
   useLayoutEffect(() => {
     const tipRect = tipRef.current.getBoundingClientRect();
     const targetRect = targetRef.current.getBoundingClientRect();
-    console.log(targetRect);
     const left = targetRect.left + targetRect.width / 2 - tipRect.width / 2;
 
     setTipLayout({
