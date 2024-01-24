@@ -1,10 +1,6 @@
 export const getTeams = async () => {
   const options = {
     method: "GET",
-    params: {
-      season: "2020",
-      league: "39",
-    },
     headers: {
       "X-RapidAPI-Key": process.env.RAPID_API_KEY,
       "X-RapidAPI-Host": process.env.RAPID_API_HOST,

@@ -12,5 +12,35 @@ body{
   background-color: #c8cdcd;
 }
 
+.tooltip {
+  position: fixed;
+  background-color: #001e28;
+  color: #eee;
+  padding: 8px;
+  border-radius: 4px;
+  max-width: 300px;
+  text-align: center;
+  z-index: 100;
+  display: block;
+  font-size: 11px;
+  box-shadow: 0 8px 24px #252a313d, 0 4px 8px #252a3129;
+}
+
+.tooltip:before {
+  content: "";
+  width: 15px;
+  height: 15px;
+  background-color: #001e28;
+  position: absolute;
+  rotate: 45deg;
+}
+
+
+
+.tooltip-bottom:before {
+  top: var(--top, 0px);
+  left: var(--left, 50%);
+  transform: translateX(-50%);
+}
 
 

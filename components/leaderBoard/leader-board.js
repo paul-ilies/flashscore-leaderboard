@@ -1,11 +1,15 @@
 "use client";
-import React, { useState } from "react";
-import TableHeader from "./table-header";
-import TableBody from "./table-body";
+import React from "react";
 import Table from "./table";
 
-const LeaderBoard = ({ standings }) => {
-  return <Table standings={standings} />;
+const LeaderBoard = ({ standings, fixtures, lastFixtures }) => {
+  return (
+    <Table
+      standings={standings}
+      fixtures={fixtures}
+      lastFixtures={lastFixtures}
+    />
+  );
 };
 
 export default LeaderBoard;

@@ -1,8 +1,14 @@
 import clsx from "clsx";
 import Image from "next/image";
 import React from "react";
+import Tooltip from "../tooltip";
 
-const TableBody = ({ leaderBoard = [], sortConfig }) => {
+const TableBody = ({
+  leaderBoard = [],
+  sortConfig,
+  nextFixtures = [],
+  pastGames = [],
+}) => {
   return (
     <tbody className="bg-white">
       {leaderBoard.map((el) => {
@@ -23,6 +29,34 @@ const TableBody = ({ leaderBoard = [], sortConfig }) => {
         const isRankedUpFour = rank <= 4;
         const isRankedFive = rank === 5;
         const isRelegation = rank >= 18;
+        //next fixture
+        const nextGame = nextFixtures.find((el) => {
+          const { teams } = el;
+          const { home, away } = teams;
+          const teamsId = [home.id, away.id];
+          return teamsId.includes(id);
+        });
+        const { fixture, teams } = nextGame;
+        const fixtureDate = new Date(fixture?.date);
+        const day = fixtureDate.getDate();
+        const month = fixtureDate.getMonth() + 1;
+        const year = fixtureDate.getFullYear();
+        const formattedDay = day < 10 ? "0" + day : day;
+        const formattedMonth = month < 10 ? "0" + month : month;
+
+        //last 5 games
+        const lastFiveGames = pastGames
+          .map((game) => {
+            const { teams, goals } = game;
+            const { home, away } = teams;
+            const teamsId = [home.id, away.id];
+            if (teamsId.includes(id)) {
+              return { teams, goals };
+            }
+            return null;
+          })
+          .filter(Boolean);
+        const showRankTooltip = isRankedUpFour || isRankedFive || isRelegation;
         return (
           <tr
             key={id}
@@ -30,16 +64,44 @@ const TableBody = ({ leaderBoard = [], sortConfig }) => {
           >
             <td className="w-[32px]">
               <div className="flex justify-center">
-                <div
-                  className={clsx(
-                    "w-5 h-5 rounded font-bold flex justify-center items-center",
-                    isRankedUpFour && "bg-[#004682] !text-white",
-                    isRankedFive && "bg-[#7F0029] !text-white",
-                    isRelegation && "bg-[#BD0000] !text-white"
-                  )}
-                >
-                  {rank}.
-                </div>
+                {showRankTooltip && (
+                  <Tooltip
+                    tip={
+                      isRankedUpFour ? (
+                        <span>
+                          Promotion - Champions League (Group Stage: )
+                        </span>
+                      ) : isRankedFive ? (
+                        <span>Promotion - Europa League (Group Stage: )</span>
+                      ) : isRelegation ? (
+                        <span>Relegation - Championship</span>
+                      ) : null
+                    }
+                  >
+                    <div
+                      className={clsx(
+                        "w-5 h-5 rounded font-bold flex justify-center items-center",
+                        isRankedUpFour && "bg-[#004682] !text-white",
+                        isRankedFive && "bg-[#7F0029] !text-white",
+                        isRelegation && "bg-[#BD0000] !text-white"
+                      )}
+                    >
+                      {rank}.
+                    </div>
+                  </Tooltip>
+                )}
+                {!showRankTooltip && (
+                  <div
+                    className={clsx(
+                      "w-5 h-5 rounded font-bold flex justify-center items-center",
+                      isRankedUpFour && "bg-[#004682] !text-white",
+                      isRankedFive && "bg-[#7F0029] !text-white",
+                      isRelegation && "bg-[#BD0000] !text-white"
+                    )}
+                  >
+                    {rank}.
+                  </div>
+                )}
               </div>
             </td>
             <td
@@ -116,7 +178,22 @@ const TableBody = ({ leaderBoard = [], sortConfig }) => {
                     "flex justify-center w-5 h-5 text-white rounded bg-[#C8CDCD] cursor-pointer"
                   )}
                 >
-                  <span className="m-auto">?</span>
+                  <Tooltip
+                    tip={
+                      <div className="flex flex-col text-[10px]">
+                        <span className="font-bold text-left">Next match:</span>
+                        <span>
+                          {teams.home.name} - {teams.away.name}
+                        </span>
+                        <span className="text-left">
+                          {formattedDay}.{formattedMonth.toLocaleString()}.
+                          {year}
+                        </span>
+                      </div>
+                    }
+                  >
+                    <span className="m-auto">?</span>
+                  </Tooltip>
                 </div>
                 {form.split("").map((f, i) => {
                   const uniqueId = f + i;
@@ -135,7 +212,23 @@ const TableBody = ({ leaderBoard = [], sortConfig }) => {
                           : "bg-[#C8CDCD]"
                       )}
                     >
-                      <span className="m-auto">{f}</span>
+                      <Tooltip
+                        tip={
+                          <div className="flex flex-col text-[10px]">
+                            <span>
+                              <strong className="!text-white font-bold">
+                                {lastFiveGames[i]?.goals?.home}:
+                                {lastFiveGames[i]?.goals?.away}
+                              </strong>{" "}
+                              ({lastFiveGames[i]?.teams?.home?.name} -
+                              {lastFiveGames[i]?.teams?.away?.name})
+                            </span>
+                            <span className="text-left">30.01.2024</span>
+                          </div>
+                        }
+                      >
+                        <span className="m-auto">{f}</span>
+                      </Tooltip>
                     </div>
                   );
                 })}

@@ -31,22 +31,24 @@ const TableHeader = ({
     setSortConfig(newSortConfig);
 
     const sortedLeaderBoard = [...leaderBoard].sort((a, b) => {
-      const aValue = key === "points" ? parseInt(a[key]) : a[key];
-      const bValue = key === "points" ? parseInt(b[key]) : b[key];
+      const aValue =
+        key === "points"
+          ? parseInt(a[key])
+          : key === "goals"
+          ? a["goalsDiff"]
+          : a[key];
+      const bValue =
+        key === "points"
+          ? parseInt(b[key])
+          : key === "goals"
+          ? b["goalsDiff"]
+          : b[key];
 
       let comparison = 0;
-      if (key === "rank" || key === "name") {
-        if (aValue > bValue) {
-          comparison = 1;
-        } else if (aValue < bValue) {
-          comparison = -1;
-        }
-      } else {
-        if (aValue > bValue) {
-          comparison = -1;
-        } else if (aValue < bValue) {
-          comparison = 1;
-        }
+      if (aValue > bValue) {
+        comparison = 1;
+      } else if (aValue < bValue) {
+        comparison = -1;
       }
 
       return newSortConfig.direction === "asc" ? comparison : -comparison;
@@ -71,7 +73,7 @@ const TableHeader = ({
       <tr>
         {Object.entries(headers).map(([key, value]) => {
           const isKeyPoints = key === "points";
-          const isTeam = key === "team";
+          const isTeam = key === "name";
 
           return (
             <th
@@ -81,13 +83,14 @@ const TableHeader = ({
                 "uppercase text-[11px] text-[#00141e] font-thin first:rounded-bl-lg last:rounded-br-lg cursor-pointer last:cursor-default",
                 isKeyPoints && "!font-bold",
                 isTeam && "!text-left px-2.5",
-                key !== "rank" && key === sortConfig?.key && "bg-[#dfe1e2]"
+                key !== "rank" && key === sortConfig?.key && "bg-[#dfe1e2]",
+                key !== "form" && "hover:underline"
               )}
             >
               <div
                 className={clsx(
                   "flex items-center justify-center w-full",
-                  key === "team" && "!justify-start"
+                  key === "name" && "!justify-start"
                 )}
               >
                 {value}
