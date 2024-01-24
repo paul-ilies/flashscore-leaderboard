@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import Tooltip from "../tooltip";
 
 const TableBody = ({
@@ -9,6 +9,8 @@ const TableBody = ({
   nextFixtures = [],
   pastGames = [],
 }) => {
+  const [teamsIds, setTeamsIds] = useState(null);
+
   return (
     <tbody className="bg-white">
       {leaderBoard.map((el) => {
@@ -37,6 +39,7 @@ const TableBody = ({
           return teamsId.includes(id);
         });
         const { fixture, teams } = nextGame;
+        // const nextGameTeamsIds = [teams?.home?.id, teams?.away?.id];
         const fixtureDate = new Date(fixture?.date);
         const day = fixtureDate.getDate();
         const month = fixtureDate.getMonth() + 1;
@@ -60,7 +63,10 @@ const TableBody = ({
         return (
           <tr
             key={id}
-            className="text-center text-xs font-thin h-[35px] border-b border-b-[#eee] text-[#001E28]"
+            className={clsx(
+              "text-center text-xs font-thin h-[35px] border-b border-b-[#eee] text-[#001E28]",
+              teamsIds !== null && teamsIds.includes(id) && "bg-[#f7f8f8]"
+            )}
           >
             <td className="w-[32px]">
               <div className="flex justify-center">
@@ -77,6 +83,7 @@ const TableBody = ({
                         <span>Relegation - Championship</span>
                       ) : null
                     }
+                    leftPosition={true}
                   >
                     <div
                       className={clsx(
@@ -177,6 +184,10 @@ const TableBody = ({
                   className={clsx(
                     "flex justify-center w-5 h-5 text-white rounded bg-[#C8CDCD] cursor-pointer"
                   )}
+                  onMouseEnter={() =>
+                    setTeamsIds([teams?.home?.id, teams?.away?.id])
+                  }
+                  onMouseLeave={() => setTeamsIds(null)}
                 >
                   <Tooltip
                     tip={
@@ -211,6 +222,14 @@ const TableBody = ({
                           ? "bg-[#F3A000]"
                           : "bg-[#C8CDCD]"
                       )}
+                      onMouseEnter={() =>
+                        setTeamsIds(() => {
+                          const homeTeamId = lastFiveGames[i]?.teams?.home?.id;
+                          const awayTeamId = lastFiveGames[i]?.teams?.away?.id;
+                          return [homeTeamId, awayTeamId];
+                        })
+                      }
+                      onMouseLeave={() => setTeamsIds(null)}
                     >
                       <Tooltip
                         tip={

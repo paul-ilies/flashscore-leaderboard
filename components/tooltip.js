@@ -1,9 +1,9 @@
+import clsx from "clsx";
 import { useState, useLayoutEffect, useRef } from "react";
 
-function Tip({ targetRef, children }) {
+function Tip({ targetRef, children, leftPosition }) {
   const [tipLayout, setTipLayout] = useState({
     style: {},
-    position: "top",
   });
 
   const tipRef = useRef(null);
@@ -11,18 +11,24 @@ function Tip({ targetRef, children }) {
   useLayoutEffect(() => {
     const tipRect = tipRef.current.getBoundingClientRect();
     const targetRect = targetRef.current.getBoundingClientRect();
-
+    console.log(targetRect);
     const left = targetRect.left + targetRect.width / 2 - tipRect.width / 2;
+
     setTipLayout({
-      position: "bottom",
-      style: { left, top: targetRect.bottom + 15 },
+      style: {
+        left: leftPosition ? targetRect.left : left,
+        top: targetRect.bottom + 15,
+      },
     });
-  }, [targetRef]);
+  }, [leftPosition, targetRef]);
 
   return (
     <span
       ref={tipRef}
-      className={`tooltip tooltip-bottom`}
+      className={clsx(
+        `tooltip`,
+        leftPosition ? "tooltip-left" : "tooltip-bottom"
+      )}
       style={tipLayout.style}
     >
       {children}
@@ -30,7 +36,7 @@ function Tip({ targetRef, children }) {
   );
 }
 
-function Tooltip({ tip, children }) {
+function Tooltip({ tip, children, leftPosition }) {
   const [isHovered, setIsHovered] = useState(false);
   const contentRef = useRef(null);
 
@@ -46,7 +52,11 @@ function Tooltip({ tip, children }) {
       >
         {children}
       </span>
-      {isHovered && <Tip targetRef={contentRef}>{tip}</Tip>}
+      {isHovered && (
+        <Tip targetRef={contentRef} leftPosition={leftPosition}>
+          {tip}
+        </Tip>
+      )}
     </>
   );
 }

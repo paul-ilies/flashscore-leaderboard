@@ -16,7 +16,7 @@ body{
   position: fixed;
   background-color: #001e28;
   color: #eee;
-  padding: 8px;
+  padding: 10px;
   border-radius: 4px;
   max-width: 300px;
   text-align: center;
@@ -41,6 +41,11 @@ body{
   top: var(--top, 0px);
   left: var(--left, 50%);
   transform: translateX(-50%);
+}
+
+.tooltip-left:before{
+  top: -7px;
+  left:6px
 }
 
 
