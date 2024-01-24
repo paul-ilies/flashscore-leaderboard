@@ -4,7 +4,7 @@ import { IoInformationCircleOutline } from "react-icons/io5";
 
 const TableFooter = () => {
   return (
-    <div className="flex text-xs font-thin mx-2.5 mt-2.5">
+    <div className="hidden lg:flex text-xs font-thin mx-2.5 mt-2.5">
       <div className="flex flex-col gap-y-4 w-[60%]">
         <div className="flex flex-col gap-y-[6px]">
           <LegendLabel

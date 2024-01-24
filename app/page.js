@@ -1,7 +1,9 @@
+import dynamic from "next/dynamic";
 import { getLastFixtures } from "@/actions/getLastFixtures";
 import { getNextFixtures } from "@/actions/getNextFixtures";
 import { getTeams } from "@/actions/getTeams";
 import Filter from "@/components/filter";
+import Footer from "@/components/footer";
 import LeaderBoard from "@/components/leaderBoard/leader-board";
 import TableFooter from "@/components/leaderBoard/table-footer";
 import SubFilter from "@/components/sub-filter";
@@ -25,6 +27,7 @@ export default async function Home() {
           <TableFooter />
         </div>
       </section>
+      <Footer />
     </div>
   );
 }
