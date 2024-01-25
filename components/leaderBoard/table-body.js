@@ -2,6 +2,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import React, { useState } from "react";
 import Tooltip from "../tooltip";
+import { changeDateFormat } from "./utils/timeFormat";
 
 const TableBody = ({
   leaderBoard = [],
@@ -39,22 +40,17 @@ const TableBody = ({
           return teamsId.includes(id);
         });
         const { fixture, teams } = nextGame;
-        // const nextGameTeamsIds = [teams?.home?.id, teams?.away?.id];
-        const fixtureDate = new Date(fixture?.date);
-        const day = fixtureDate.getDate();
-        const month = fixtureDate.getMonth() + 1;
-        const year = fixtureDate.getFullYear();
-        const formattedDay = day < 10 ? "0" + day : day;
-        const formattedMonth = month < 10 ? "0" + month : month;
+        const nextFixtureDate = changeDateFormat(fixture?.date);
 
         //last 5 games
         const lastFiveGames = pastGames
           .map((game) => {
-            const { teams, goals } = game;
+            const { teams, goals, fixture } = game;
+            const fixtureDate = changeDateFormat(fixture?.date);
             const { home, away } = teams;
             const teamsId = [home.id, away.id];
             if (teamsId.includes(id)) {
-              return { teams, goals };
+              return { teams, goals, date: fixtureDate };
             }
             return null;
           })
@@ -196,10 +192,7 @@ const TableBody = ({
                         <span>
                           {teams.home.name} - {teams.away.name}
                         </span>
-                        <span className="text-left">
-                          {formattedDay}.{formattedMonth.toLocaleString()}.
-                          {year}
-                        </span>
+                        <span className="text-left">{nextFixtureDate}</span>
                       </div>
                     }
                   >
@@ -242,7 +235,9 @@ const TableBody = ({
                               ({lastFiveGames[i]?.teams?.home?.name} -
                               {lastFiveGames[i]?.teams?.away?.name})
                             </span>
-                            <span className="text-left">30.01.2024</span>
+                            <span className="text-left">
+                              {lastFiveGames[i]?.date}
+                            </span>
                           </div>
                         }
                       >
