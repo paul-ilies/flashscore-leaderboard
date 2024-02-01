@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import TableHeader from "./table-header";
 import TableBody from "./table-body";

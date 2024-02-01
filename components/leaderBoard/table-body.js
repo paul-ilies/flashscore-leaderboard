@@ -1,3 +1,4 @@
+"use client";
 import clsx from "clsx";
 import Image from "next/image";
 import React, { useState } from "react";
@@ -32,15 +33,15 @@ const TableBody = ({
         const isRankedUpFour = rank <= 4;
         const isRankedFive = rank === 5;
         const isRelegation = rank >= 18;
+
         //next fixture
         const nextGame = nextFixtures.find((el) => {
-          const { teams } = el;
-          const { home, away } = teams;
-          const teamsId = [home.id, away.id];
+          const teamsId = [el?.teams?.home?.id, el?.teams?.away?.id];
+
           return teamsId.includes(id);
         });
-        const { fixture, teams } = nextGame;
-        const nextFixtureDate = changeDateFormat(fixture?.date);
+
+        const nextFixtureDate = changeDateFormat(nextGame?.fixture?.date);
 
         //last 5 games
         const lastFiveGames = pastGames
@@ -56,6 +57,7 @@ const TableBody = ({
           })
           .filter(Boolean);
         const showRankTooltip = isRankedUpFour || isRankedFive || isRelegation;
+
         return (
           <tr
             key={id}
@@ -181,7 +183,10 @@ const TableBody = ({
                     "flex justify-center w-5 h-5 text-white rounded bg-[#C8CDCD] cursor-pointer"
                   )}
                   onMouseEnter={() =>
-                    setTeamsIds([teams?.home?.id, teams?.away?.id])
+                    setTeamsIds([
+                      nextGame?.teams?.home?.id,
+                      nextGame?.teams?.away?.id,
+                    ])
                   }
                   onMouseLeave={() => setTeamsIds(null)}
                 >
@@ -189,10 +194,18 @@ const TableBody = ({
                     tip={
                       <div className="flex flex-col text-[10px]">
                         <span className="font-bold text-left">Next match:</span>
-                        <span>
-                          {teams.home.name} - {teams.away.name}
+                        {nextGame?.teams ? (
+                          <span>
+                            {nextGame?.teams?.home?.name} -{" "}
+                            {nextGame?.teams?.away?.name}
+                          </span>
+                        ) : (
+                          <span>no data</span>
+                        )}
+
+                        <span className="text-left">
+                          {nextGame?.teams ? nextFixtureDate : ""}
                         </span>
-                        <span className="text-left">{nextFixtureDate}</span>
                       </div>
                     }
                   >
@@ -226,19 +239,23 @@ const TableBody = ({
                     >
                       <Tooltip
                         tip={
-                          <div className="flex flex-col text-[10px]">
-                            <span>
-                              <strong className="!text-white font-bold">
-                                {lastFiveGames[i]?.goals?.home}:
-                                {lastFiveGames[i]?.goals?.away}
-                              </strong>{" "}
-                              ({lastFiveGames[i]?.teams?.home?.name} -
-                              {lastFiveGames[i]?.teams?.away?.name})
-                            </span>
-                            <span className="text-left">
-                              {lastFiveGames[i]?.date}
-                            </span>
-                          </div>
+                          lastFiveGames[i]?.goals && lastFiveGames[i]?.date ? (
+                            <div className="flex flex-col text-[10px]">
+                              <span>
+                                <strong className="!text-white font-bold">
+                                  {lastFiveGames[i]?.goals?.home}:
+                                  {lastFiveGames[i]?.goals?.away}
+                                </strong>{" "}
+                                ({lastFiveGames[i]?.teams?.home?.name} -
+                                {lastFiveGames[i]?.teams?.away?.name})
+                              </span>
+                              <span className="text-left">
+                                {lastFiveGames[i]?.date}
+                              </span>
+                            </div>
+                          ) : (
+                            <span>no data</span>
+                          )
                         }
                       >
                         <span className="m-auto">{f}</span>

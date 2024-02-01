@@ -5,6 +5,7 @@ export const getTeams = async () => {
       "X-RapidAPI-Key": process.env.RAPID_API_KEY,
       "X-RapidAPI-Host": process.env.RAPID_API_HOST,
     },
+    next: { revalidate: 3600 },
   };
   try {
     const response = await fetch(
