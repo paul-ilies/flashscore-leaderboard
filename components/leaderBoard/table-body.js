@@ -176,42 +176,48 @@ const TableBody = ({
             >
               <div className="font-bold">{points}</div>
             </td>
+
             <td className="w-[160px]">
               <div className="flex gap-x-1 items-center justify-center ">
-                <div
-                  className={clsx(
-                    "flex justify-center w-5 h-5 text-white rounded bg-[#C8CDCD] cursor-pointer"
-                  )}
-                  onMouseEnter={() =>
-                    setTeamsIds([
-                      nextGame?.teams?.home?.id,
-                      nextGame?.teams?.away?.id,
-                    ])
-                  }
-                  onMouseLeave={() => setTeamsIds(null)}
-                >
-                  <Tooltip
-                    tip={
-                      <div className="flex flex-col text-[10px]">
-                        <span className="font-bold text-left">Next match:</span>
-                        {nextGame?.teams ? (
-                          <span>
-                            {nextGame?.teams?.home?.name} -{" "}
-                            {nextGame?.teams?.away?.name}
-                          </span>
-                        ) : (
-                          <span>no data</span>
-                        )}
-
-                        <span className="text-left">
-                          {nextGame?.teams ? nextFixtureDate : ""}
-                        </span>
-                      </div>
+                {!nextGame ? null : (
+                  <div
+                    className={clsx(
+                      "flex justify-center w-5 h-5 text-white rounded bg-[#C8CDCD] cursor-pointer"
+                    )}
+                    onMouseEnter={() =>
+                      setTeamsIds([
+                        nextGame?.teams?.home?.id,
+                        nextGame?.teams?.away?.id,
+                      ])
                     }
+                    onMouseLeave={() => setTeamsIds(null)}
                   >
-                    <span className="m-auto">?</span>
-                  </Tooltip>
-                </div>
+                    <Tooltip
+                      tip={
+                        <div className="flex flex-col text-[10px]">
+                          <span className="font-bold text-left">
+                            Next match:
+                          </span>
+                          {nextGame?.teams ? (
+                            <span>
+                              {nextGame?.teams?.home?.name} -{" "}
+                              {nextGame?.teams?.away?.name}
+                            </span>
+                          ) : (
+                            <span>no data</span>
+                          )}
+
+                          <span className="text-left">
+                            {nextGame?.teams ? nextFixtureDate : ""}
+                          </span>
+                        </div>
+                      }
+                    >
+                      <span className="m-auto">?</span>
+                    </Tooltip>
+                  </div>
+                )}
+
                 {form.split("").map((f, i) => {
                   const uniqueId = f + i;
                   const lowerForm = f.toLowerCase();
